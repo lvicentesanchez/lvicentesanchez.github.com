@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[monadic web design]]></title>
+  <link href="http://lvicentesanchez.github.com/atom.xml" rel="self"/>
+  <link href="http://lvicentesanchez.github.com/"/>
+  <updated>2013-03-24T13:15:16+00:00</updated>
+  <id>http://lvicentesanchez.github.com/</id>
+  <author>
+    <name><![CDATA[langelvs]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[#0 born]]></title>
+    <link href="http://lvicentesanchez.github.com/blog/2013/03/24/number-0-born/"/>
+    <updated>2013-03-24T13:12:00+00:00</updated>
+    <id>http://lvicentesanchez.github.com/blog/2013/03/24/number-0-born</id>
+    <content type="html"><![CDATA[<p>This is going to be a hotchpotch of lot of things related to functional programming and web development. I will focus on:</p>
+
+<ul>
+<li>Scala 2.10.+</li>
+<li>Play 2.1.+ &amp; Akka 2.1.+</li>
+<li>Scalaz 7.+</li>
+<li>Shapeless 1.2.+</li>
+<li>Spire 0.+</li>
+</ul>
+
+
+<p>Stay tunned!</p>
+]]></content>
+  </entry>
+  
+</feed>
