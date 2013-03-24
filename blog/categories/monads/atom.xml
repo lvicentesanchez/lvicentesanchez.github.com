@@ -4,7 +4,7 @@
   <title><![CDATA[Category: monads | monadic web design]]></title>
   <link href="http://lvicentesanchez.github.com/blog/categories/monads/atom.xml" rel="self"/>
   <link href="http://lvicentesanchez.github.com/"/>
-  <updated>2013-03-24T17:00:18+00:00</updated>
+  <updated>2013-03-24T17:03:58+00:00</updated>
   <id>http://lvicentesanchez.github.com/</id>
   <author>
     <name><![CDATA[Luis A. Vicente Sanchez]]></name>
@@ -18,7 +18,7 @@
     <link href="http://lvicentesanchez.github.com/blog/2013/03/24/number-1-future-is-a-monad/"/>
     <updated>2013-03-24T14:17:00+00:00</updated>
     <id>http://lvicentesanchez.github.com/blog/2013/03/24/number-1-future-is-a-monad</id>
-    <content type="html"><![CDATA[<p>We all know that scala futures are a monad... but could we wrap them using Scalaz Monad trait? Being able to do that would allow use all Scalaz abstractions with our loved scala futures.</p>
+    <content type="html"><![CDATA[<p>We all know that scala futures are a monad... but could we wrap them using scalaz Monad trait? Being able to do that would allow use all scalaz abstractions with our loved scala futures.</p>
 
 <p>It turns out to be a really easy task...</p>
 
@@ -35,17 +35,7 @@ override def bind[A, B](fa: Future[A])(f: A =&gt; Future[B]): Future[B] =
 <p>  }
 ```</p>
 
-<p>Now we can do lot of fancy things as using the sequence method over a list of Monads:</p>
-
-<p>``` scala
-  def sequence<a href="l:%20List[M[T]]">T, M[+_] : Monad</a>: M[List[T]] =</p>
-
-<pre><code>implicitly[Monad[M]].sequence(l)
-</code></pre>
-
-<p>```</p>
-
-<p>Or if you don't mind to add some more implicit magic into place:</p>
+<p>Now we can do lot of fancy things as using the sequence method over a list of Monads, either implementing our own function or bringing some more implicit scalaz magic into place:</p>
 
 <p>``` scala
 package futuremonad</p>
@@ -75,10 +65,24 @@ override def bind[A, B](fa: Future[A])(f: A =&gt; Future[B]): Future[B] =
 
 <p>  }</p>
 
-<p>  val nums = (1 to 100) toStream
-  val odds = nums filter (_ % 2 == 1) toList</p>
+<p>  def sequence<a href="l:%20List[M[T]]">T, M[+_] : Monad</a>: M[List[T]] =</p>
 
-<p>  val fls2 = odds.map(a => future(a*2)).sequence map (_.sum)</p>
+<pre><code>implicitly[Monad[M]].sequence(l)
+</code></pre>
+
+<p>  val nums = (1 to 100) toStream
+  val even = nums filter (<em> % 2 == 0) toList
+  val odds = nums filter (</em> % 2 == 1) toList</p>
+
+<p>  val fls1 = sequence(even map (a => future(a))) map (<em>.sum)
+  val fls2 = odds.map(a => future(a*2)).sequence map (</em>.sum)</p>
+
+<p>  fls1 onSuccess {</p>
+
+<pre><code>case total =&gt; println(s"Sum of evens: $total")
+</code></pre>
+
+<p>  }</p>
 
 <p>  fls2 onSuccess {</p>
 
@@ -87,7 +91,8 @@ override def bind[A, B](fa: Future[A])(f: A =&gt; Future[B]): Future[B] =
 
 <p>  }</p>
 
-<p>  Await.ready(fls2, 5 seconds)
+<p>  Await.ready(fls1, 5 seconds)
+  Await.ready(fls2, 5 seconds)
 }
 ```</p>
 

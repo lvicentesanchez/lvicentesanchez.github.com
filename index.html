@@ -6,7 +6,7 @@
 	<title>monadic web design</title>
     <meta name="author" content="Luis A. Vicente Sanchez">
     
-	<meta name="description" content="Published on: Mar 24th, 2013 Tags: monads, scala, scalaz We all know that scala futures are a monad&#8230; but could we wrap them using Scalaz Monad &hellip;">
+	<meta name="description" content="Published on: Mar 24th, 2013 Tags: monads, scala, scalaz We all know that scala futures are a monad&#8230; but could we wrap them using scalaz Monad &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -116,7 +116,7 @@
 
 </div>
     </div>
-		<p>We all know that scala futures are a monad&#8230; but could we wrap them using Scalaz Monad trait? Being able to do that would allow use all Scalaz abstractions with our loved scala futures.</p>
+		<p>We all know that scala futures are a monad&#8230; but could we wrap them using scalaz Monad trait? Being able to do that would allow use all scalaz abstractions with our loved scala futures.</p>
 
 <p>It turns out to be a really easy task&#8230;</p>
 
@@ -137,16 +137,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Now we can do lot of fancy things as using the sequence method over a list of Monads:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='scala'><span class='line'>  <span class="k">def</span> <span class="n">sequence</span><span class="o">[</span><span class="kt">T</span>, <span class="kt">M</span><span class="o">[</span><span class="kt">+</span><span class="k">_</span><span class="o">]</span> <span class="kt">:</span> <span class="kt">Monad</span><span class="o">](</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">M</span><span class="o">[</span><span class="kt">T</span><span class="o">]])</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">T</span><span class="o">]]</span> <span class="k">=</span>
-</span><span class='line'>    <span class="n">implicitly</span><span class="o">[</span><span class="kt">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">]].</span><span class="n">sequence</span><span class="o">(</span><span class="n">l</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Or if you don&#8217;t mind to add some more implicit magic into place:</p>
+<p>Now we can do lot of fancy things as using the sequence method over a list of Monads, either implementing our own function or bringing some more implicit scalaz magic into place:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -183,6 +174,16 @@
 <span class='line-number'>33</span>
 <span class='line-number'>34</span>
 <span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
 </pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">package</span> <span class="nn">futuremonad</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">import</span> <span class="nn">scala.language.</span><span class="o">{</span> <span class="n">higherKinds</span><span class="o">,</span> <span class="n">postfixOps</span> <span class="o">}</span>
@@ -207,15 +208,25 @@
 </span><span class='line'>      <span class="n">fa</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">f</span><span class="o">)</span>
 </span><span class='line'>  <span class="o">}</span>
 </span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="n">sequence</span><span class="o">[</span><span class="kt">T</span>, <span class="kt">M</span><span class="o">[</span><span class="kt">+</span><span class="k">_</span><span class="o">]</span> <span class="kt">:</span> <span class="kt">Monad</span><span class="o">](</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">M</span><span class="o">[</span><span class="kt">T</span><span class="o">]])</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">T</span><span class="o">]]</span> <span class="k">=</span>
+</span><span class='line'>    <span class="n">implicitly</span><span class="o">[</span><span class="kt">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">]].</span><span class="n">sequence</span><span class="o">(</span><span class="n">l</span><span class="o">)</span>
+</span><span class='line'>
 </span><span class='line'>  <span class="k">val</span> <span class="n">nums</span> <span class="k">=</span> <span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">100</span><span class="o">)</span> <span class="n">toStream</span>
+</span><span class='line'>  <span class="k">val</span> <span class="n">even</span> <span class="k">=</span> <span class="n">nums</span> <span class="n">filter</span> <span class="o">(</span><span class="k">_</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="n">toList</span>
 </span><span class='line'>  <span class="k">val</span> <span class="n">odds</span> <span class="k">=</span> <span class="n">nums</span> <span class="n">filter</span> <span class="o">(</span><span class="k">_</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="n">toList</span>
 </span><span class='line'>
+</span><span class='line'>  <span class="k">val</span> <span class="n">fls1</span> <span class="k">=</span> <span class="n">sequence</span><span class="o">(</span><span class="n">even</span> <span class="n">map</span> <span class="o">(</span><span class="n">a</span> <span class="k">=&gt;</span> <span class="n">future</span><span class="o">(</span><span class="n">a</span><span class="o">)))</span> <span class="n">map</span> <span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">sum</span><span class="o">)</span>
 </span><span class='line'>  <span class="k">val</span> <span class="n">fls2</span> <span class="k">=</span> <span class="n">odds</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">a</span> <span class="k">=&gt;</span> <span class="n">future</span><span class="o">(</span><span class="n">a</span><span class="o">*</span><span class="mi">2</span><span class="o">)).</span><span class="n">sequence</span> <span class="n">map</span> <span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">sum</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fls1</span> <span class="n">onSuccess</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">total</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;Sum of evens: $total&quot;</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="n">fls2</span> <span class="n">onSuccess</span> <span class="o">{</span>
 </span><span class='line'>    <span class="k">case</span> <span class="n">total</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;Sum of 2*odds: $total&quot;</span><span class="o">)</span>
 </span><span class='line'>  <span class="o">}</span>
 </span><span class='line'>
+</span><span class='line'>  <span class="nc">Await</span><span class="o">.</span><span class="n">ready</span><span class="o">(</span><span class="n">fls1</span><span class="o">,</span> <span class="mi">5</span> <span class="n">seconds</span><span class="o">)</span>
 </span><span class='line'>  <span class="nc">Await</span><span class="o">.</span><span class="n">ready</span><span class="o">(</span><span class="n">fls2</span><span class="o">,</span> <span class="mi">5</span> <span class="n">seconds</span><span class="o">)</span>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
