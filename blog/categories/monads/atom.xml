@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: monads | monadic web design]]></title>
+  <link href="http://lvicentesanchez.github.com/blog/categories/monads/atom.xml" rel="self"/>
+  <link href="http://lvicentesanchez.github.com/"/>
+  <updated>2013-03-24T17:00:18+00:00</updated>
+  <id>http://lvicentesanchez.github.com/</id>
+  <author>
+    <name><![CDATA[Luis A. Vicente Sanchez]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[#1 future is a monad]]></title>
+    <link href="http://lvicentesanchez.github.com/blog/2013/03/24/number-1-future-is-a-monad/"/>
+    <updated>2013-03-24T14:17:00+00:00</updated>
+    <id>http://lvicentesanchez.github.com/blog/2013/03/24/number-1-future-is-a-monad</id>
+    <content type="html"><![CDATA[<p>We all know that scala futures are a monad... but could we wrap them using Scalaz Monad trait? Being able to do that would allow use all Scalaz abstractions with our loved scala futures.</p>
+
+<p>It turns out to be a really easy task...</p>
+
+<p>``` scala
+  implicit val futureMonad = new Monad[Future] {</p>
+
+<pre><code>override def point[A](a: =&gt; A): Future[A] =
+  future(a)
+
+override def bind[A, B](fa: Future[A])(f: A =&gt; Future[B]): Future[B] =
+  fa.flatMap(f)
+</code></pre>
+
+<p>  }
+```</p>
+
+<p>Now we can do lot of fancy things as using the sequence method over a list of Monads:</p>
+
+<p>``` scala
+  def sequence<a href="l:%20List[M[T]]">T, M[+_] : Monad</a>: M[List[T]] =</p>
+
+<pre><code>implicitly[Monad[M]].sequence(l)
+</code></pre>
+
+<p>```</p>
+
+<p>Or if you don't mind to add some more implicit magic into place:</p>
+
+<p>``` scala
+package futuremonad</p>
+
+<p>import scala.language.{ higherKinds, postfixOps }</p>
+
+<p>import scala.concurrent.<em>
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.</em>
+import scala.collection.immutable._</p>
+
+<p>import scalaz.<em>
+import scalaz.std.list.</em>
+import scalaz.syntax.monad.<em>
+import scalaz.syntax.traverse.</em></p>
+
+<p>object Monads extends App {</p>
+
+<p>  implicit val futureMonad = new Monad[Future] {</p>
+
+<pre><code>override def point[A](a: =&gt; A): Future[A] =
+  future(a)
+
+override def bind[A, B](fa: Future[A])(f: A =&gt; Future[B]): Future[B] =
+  fa.flatMap(f)
+</code></pre>
+
+<p>  }</p>
+
+<p>  val nums = (1 to 100) toStream
+  val odds = nums filter (_ % 2 == 1) toList</p>
+
+<p>  val fls2 = odds.map(a => future(a*2)).sequence map (_.sum)</p>
+
+<p>  fls2 onSuccess {</p>
+
+<pre><code>case total =&gt; println(s"Sum of 2*odds: $total")
+</code></pre>
+
+<p>  }</p>
+
+<p>  Await.ready(fls2, 5 seconds)
+}
+```</p>
+
+<p>The source code is available at <a href="https://github.com/lvicentesanchez/post-01">https://github.com/lvicentesanchez</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

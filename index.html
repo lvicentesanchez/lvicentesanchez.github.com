@@ -6,7 +6,7 @@
 	<title>monadic web design</title>
     <meta name="author" content="Luis A. Vicente Sanchez">
     
-	<meta name="description" content="Published on: Mar 24th, 2013 Tags: This is going to be a hotchpotch of lot of things related to functional programming and web development. I will &hellip;">
+	<meta name="description" content="Published on: Mar 24th, 2013 Tags: monads, scala, scalaz We all know that scala futures are a monad&#8230; but could we wrap them using Scalaz Monad &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -84,6 +84,155 @@
 <!-- begin toload --> 
     <div id="content" class="inner">
         
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/24/number-1-future-is-a-monad/">
+		
+			#1 Future Is a Monad</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-24T14:17:00+00:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time></div>
+      <div class="tags">Tags: 
+
+
+	<a class='category' href='/blog/categories/monads/'>monads</a>, <a class='category' href='/blog/categories/scala/'>scala</a>, <a class='category' href='/blog/categories/scalaz/'>scalaz</a>
+
+
+</div>
+    </div>
+		<p>We all know that scala futures are a monad&#8230; but could we wrap them using Scalaz Monad trait? Being able to do that would allow use all Scalaz abstractions with our loved scala futures.</p>
+
+<p>It turns out to be a really easy task&#8230;</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'>  <span class="k">implicit</span> <span class="k">val</span> <span class="n">futureMonad</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Monad</span><span class="o">[</span><span class="kt">Future</span><span class="o">]</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">override</span> <span class="k">def</span> <span class="n">point</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">a</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span>
+</span><span class='line'>      <span class="n">future</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">override</span> <span class="k">def</span> <span class="n">bind</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">fa</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">A</span><span class="o">])(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+</span><span class='line'>      <span class="n">fa</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">f</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we can do lot of fancy things as using the sequence method over a list of Monads:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'>  <span class="k">def</span> <span class="n">sequence</span><span class="o">[</span><span class="kt">T</span>, <span class="kt">M</span><span class="o">[</span><span class="kt">+</span><span class="k">_</span><span class="o">]</span> <span class="kt">:</span> <span class="kt">Monad</span><span class="o">](</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">M</span><span class="o">[</span><span class="kt">T</span><span class="o">]])</span><span class="k">:</span> <span class="kt">M</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">T</span><span class="o">]]</span> <span class="k">=</span>
+</span><span class='line'>    <span class="n">implicitly</span><span class="o">[</span><span class="kt">Monad</span><span class="o">[</span><span class="kt">M</span><span class="o">]].</span><span class="n">sequence</span><span class="o">(</span><span class="n">l</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or if you don&#8217;t mind to add some more implicit magic into place:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">package</span> <span class="nn">futuremonad</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="nn">scala.language.</span><span class="o">{</span> <span class="n">higherKinds</span><span class="o">,</span> <span class="n">postfixOps</span> <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="nn">scala.concurrent._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">scala.concurrent.ExecutionContext.Implicits.global</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">scala.concurrent.duration._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">scala.collection.immutable._</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">import</span> <span class="nn">scalaz._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">scalaz.std.list._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">scalaz.syntax.monad._</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">scalaz.syntax.traverse._</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">object</span> <span class="nc">Monads</span> <span class="k">extends</span> <span class="nc">App</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">implicit</span> <span class="k">val</span> <span class="n">futureMonad</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Monad</span><span class="o">[</span><span class="kt">Future</span><span class="o">]</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">override</span> <span class="k">def</span> <span class="n">point</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">a</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span>
+</span><span class='line'>      <span class="n">future</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">override</span> <span class="k">def</span> <span class="n">bind</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">fa</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">A</span><span class="o">])(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Future</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+</span><span class='line'>      <span class="n">fa</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">f</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">val</span> <span class="n">nums</span> <span class="k">=</span> <span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">100</span><span class="o">)</span> <span class="n">toStream</span>
+</span><span class='line'>  <span class="k">val</span> <span class="n">odds</span> <span class="k">=</span> <span class="n">nums</span> <span class="n">filter</span> <span class="o">(</span><span class="k">_</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="n">toList</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">val</span> <span class="n">fls2</span> <span class="k">=</span> <span class="n">odds</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">a</span> <span class="k">=&gt;</span> <span class="n">future</span><span class="o">(</span><span class="n">a</span><span class="o">*</span><span class="mi">2</span><span class="o">)).</span><span class="n">sequence</span> <span class="n">map</span> <span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">sum</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fls2</span> <span class="n">onSuccess</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">total</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;Sum of 2*odds: $total&quot;</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nc">Await</span><span class="o">.</span><span class="n">ready</span><span class="o">(</span><span class="n">fls2</span><span class="o">,</span> <span class="mi">5</span> <span class="n">seconds</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The source code is available at <a href="https://github.com/lvicentesanchez/post-01">https://github.com/lvicentesanchez</a>.</p>
+
+		
+		
+	</div>
+
+<div class="meta">
+	
+		<span class="comments"><a href="/blog/2013/03/24/number-1-future-is-a-monad//index.html#disqus_thread">Comments</a></span>
+	
+</div>
+</article>
 
 
     <article class="post">
