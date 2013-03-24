@@ -3,11 +3,10 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>#0 born - monadic web design</title>
+	<title>monadic web design</title>
     <meta name="author" content="Luis A. Vicente Sanchez">
     
-	<meta name="description" content="This is going to be a hotchpotch of lot of things related to functional programming and web development. I will focus on: Scala 2.10.+
-Play 2.1.+ & &hellip;">
+	<meta name="description" content="Search Results $('#search_results').tapir({ 'token': '', 'complete' : function() { document.getElementById('search_loading').style.display="none &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -84,48 +83,22 @@ Play 2.1.+ & &hellip;">
 <div id="toload">
 <!-- begin toload --> 
     <div id="content" class="inner">
-        <article class="post">
-	<h2 class="title">#0 Born</h2>
-	<div class="entry-content"><p>This is going to be a hotchpotch of lot of things related to functional programming and web development. I will focus on:</p>
-
-<ul>
-<li>Scala 2.10.+</li>
-<li>Play 2.1.+ &amp; Akka 2.1.+</li>
-<li>Scalaz 7.+</li>
-<li>Shapeless 1.2.+</li>
-<li>Spire 0.+</li>
-</ul>
-
-
-<p>Stay tunned!</p>
+        <h1 class="entry-title"><center>Search Results</center></h1>
+<div id="search_loading" style="margin: 40px 0">
+    <center><img src="/images/loading.gif"></center>
 </div>
 
-<div class="meta">
-	
-		<span class="comments"><a href="/blog/2013/03/24/number-0-born/#disqus_thread">Comments</a></span>
-	
+<script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<div id="search_results" style="display:none">
+<br>
 </div>
-</article>
+<script>
+         $('#search_results').tapir({
+             'token': '',
+             'complete' : function() { document.getElementById('search_loading').style.display="none"; }
+         });
+</script>
 
-	<div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
-</div>
-
-
-
-<section id="comment">
-    <h2 class="title">Comments</h2>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-</section>
 
     </div>
     <footer id="footer">
@@ -152,10 +125,7 @@ Play 2.1.+ & &hellip;">
       var disqus_shortname = 'monadicwebdesign';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://lvicentesanchez.github.com/blog/2013/03/24/number-0-born/';
-        var disqus_url = 'http://lvicentesanchez.github.com/blog/2013/03/24/number-0-born/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
