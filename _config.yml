@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://lvicentesanchez.github.com
+title: monadic web design
+subtitle: functional programming, scala, play framework, ...
+author: Luis A. Vicente Sanchez
 simple_search: http://google.com/search
 description:
 
@@ -64,7 +64,7 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: lvicentesanchez
 twitter_tweet_button: true
 
 # Google +1
@@ -85,8 +85,8 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
-disqus_show_comment_count: false
+disqus_short_name: monadicwebdesign
+disqus_show_comment_count: true
 
 # Google Analytics
 google_analytics_tracking_id:
