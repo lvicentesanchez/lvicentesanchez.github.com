@@ -4,11 +4,11 @@
   <title><![CDATA[monadic web design]]></title>
   <link href="http://lvicentesanchez.github.com/atom.xml" rel="self"/>
   <link href="http://lvicentesanchez.github.com/"/>
-  <updated>2013-03-24T17:06:45+00:00</updated>
+  <updated>2013-03-26T20:35:03+00:00</updated>
   <id>http://lvicentesanchez.github.com/</id>
   <author>
     <name><![CDATA[Luis A. Vicente Sanchez]]></name>
-    
+    <email><![CDATA[langel.vicente@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
